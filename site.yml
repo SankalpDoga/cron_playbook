@@ -1,0 +1,7 @@
+---
+# using the defaults
+
+- hosts: 172.17.0.3
+  remote_user: root
+  roles:
+    - { role: cron }

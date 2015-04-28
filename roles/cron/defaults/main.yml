@@ -1,0 +1,7 @@
+---
+
+backup_server_address: "localhost"
+db_script_dir: "/home/db"
+imagenode_script_dir: "/home/imagenode"
+backup_db_dir: "/home/db"
+backup_imagenode_dir: "/home/imagenode" 

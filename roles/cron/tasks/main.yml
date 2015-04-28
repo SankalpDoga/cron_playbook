@@ -1,0 +1,46 @@
+---
+
+- name: Include OS-specific variables.
+  include_vars: "{{ ansible_os_family }}.yml"
+
+# Install cron package (RedHat).
+#- name: Install cron package (RedHat).
+#  yum: "pkg={{ item }} state=installed"
+#  with_items:
+#    - vixie-cron
+#    - crontabs
+#  when: ansible_os_family == 'RedHat'
+
+# Install cron package (Debian).
+- name: Install cron package (Debian).
+  apt: "pkg=cron state=installed"
+  when: ansible_os_family == 'Debian'
+
+#Install sql client
+- name: Install mysql client package (Debian).
+  apt: "pkg=mysql-client state=installed"
+  when: ansible_os_family == 'Debian'
+
+- name: Creates directory
+  file: path={{db_script_dir}} state=directory
+
+- name: Creates directory
+  file: path={{imagenode_script_dir}} state=directory
+
+- name: Copy server backup shell script.
+  template: >
+    src=db_backup.sh.j2
+    dest={{db_script_dir}}/db_backup.sh
+    owner=root group=root mode=777
+
+- name: Copy server backup shell script.
+  template: >
+    src=imagenode_backup.sh.j2
+    dest={{imagenode_script_dir}}/imagenode_backup.sh
+    owner=root group=root mode=777
+
+# Cron job to run
+- cron: name="job for db backup" minute="1" job="{{db_script_dir}}/db_backup.sh"
+
+# Cron job to run
+- cron: name="job for imagenode backup" minute="1" job="{{imagenode_script_dir}}/imagenode_backup.sh"
